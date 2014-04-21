@@ -1,15 +1,13 @@
 import json
-from tulipmq import settings
+from .settings import REDIS_LIST_PREFIX
 
 
 class Job:
-    """
-    Container for job's metadata.
+    """Container for job's metadata.
 
     Metadata could be accessed using standard dot notation,
     like ``job.namespace``, ``job.data`` or  ``job.action``
     """
-
 
     def __init__(self, job_str):
         self._raw_data = job_str
@@ -30,7 +28,6 @@ def get_key(queue_name):
     Helper method to construct key for redis structure used
     in queue module
 
-    :param queue_name: name of the queue
-    :type queue_name: ```str```
+    :param queue_name: ``str`` name of the queue
     """
-    return u'{0}:{1}'.format(settings.REDIS_LIST_PREFIX, queue_name)
+    return '{0}:{1}'.format(REDIS_LIST_PREFIX, queue_name)

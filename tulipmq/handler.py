@@ -1,5 +1,5 @@
-from abc import abstractproperty
 import asyncio
+from tulipmq.exceptions import TMQNoNamespaceHandler
 
 
 class MetaRegister(type):
@@ -7,25 +7,19 @@ class MetaRegister(type):
 
     def __new__(cls, name, bases, attrs):
         assert 'namespace' in attrs, "namespace is mandatory class attribute"
-
         new_cls = type.__new__(cls, name, bases, attrs)
         cls.REGISTRY[attrs['namespace']] = new_cls
         return new_cls
 
 
 class BaseHandler(metaclass=MetaRegister):
-    """
+    """XXX"""
 
-    """
+    namespace = None
 
     def __init__(self, job):
         self.job = job
-
-    @abstractproperty
-    def namespace(self):
-        """
-        Namespace identifier.
-        """
+        assert self.namespace, "Namespace must be specified"
 
     @asyncio.coroutine
     def _handle(self):
@@ -35,15 +29,10 @@ class BaseHandler(metaclass=MetaRegister):
         attribute in this class and finally
         """
         action = '{0}_handler'.format(self.job.action)
-        action_handler = getattr(self, action)
+        action_handler = getattr(self, action, None)
+        if not asyncio:
+            msg = "No such handler: {}".format(action)
+            raise TMQNoNamespaceHandler(msg)
         yield from action_handler(**self.job.data)
 
 
-class TestHandlerClass(BaseHandler):
-
-    namespace = 'ns'
-
-    @asyncio.coroutine
-    def do_staff_handler(self, **kwargs):
-        yield from asyncio.sleep(2)
-        print(kwargs)

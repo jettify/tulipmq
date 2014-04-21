@@ -38,20 +38,16 @@ class Producer:
         self._queue = RedisQueue(conn, qname)
 
     def __getattr__(self, action):
-        """
-        Create method with required action, and passes it
-        to client.
-        """
+        """Create method with required action, and passes it
+        to client."""
         @asyncio.coroutine
         def add_job(self, **kw):
-            msg = self.build_msg(action, **kw)
-            yield from self.queue.put(msg)
+            msg = self._build_msg(action, **kw)
+            yield from self._queue.put(msg)
         return add_job.__get__(self)
 
     def _build_msg(self, action, **kw):
-        """
-        Form job metadata as string with JSON data.
-        """
+        """Form job metadata as string with JSON data."""
         job_id = kw.pop('id', None) or str(uuid.uuid4())
         data = {
             'id': job_id,
@@ -59,10 +55,6 @@ class Producer:
             'action': action,
             'data': kw
             }
-        return self.serializer(data)
+        return json.dumps(data)
 
 
-def connect_producer(namespace, qname=None, **kwargs):
-    conn = yield from asyncio_redis.Connection.create(**kwargs)
-    rq = Producer(conn, namespace, qname)
-    return rq

@@ -1,9 +1,10 @@
 import asyncio
 from unittest import TestCase
+import unittest
 import asyncio_redis
 from tulipmq.rq import RedisQueue
 
-
+# @unittest.skip("showing class skipping")
 class RedisQueueTestCase(TestCase):
 
     def setUp(self):
@@ -34,7 +35,7 @@ class RedisQueueTestCase(TestCase):
             self.assertEqual(qsize, 0)
             self.assertTrue(is_empry)
 
-            # yield from conn.flushdb()
+            yield from conn.flushdb()
 
         self.loop.run_until_complete(go())
 
@@ -46,12 +47,12 @@ class RedisQueueTestCase(TestCase):
             yield from rq.put("one")
             yield from rq.put("two")
 
-            # one = yield from rq.get()
-            # two = yield from rq.get()
-            #
-            # self.assertEqual(one, 'one')
-            # self.assertEqual(two, 'two')
+            one = yield from rq.get()
+            two = yield from rq.get()
 
-            # yield from conn.flushdb()
+            self.assertEqual(one, 'one')
+            self.assertEqual(two, 'two')
+
+            yield from conn.flushdb()
 
         self.loop.run_until_complete(go())

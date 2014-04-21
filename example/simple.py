@@ -9,18 +9,13 @@ def connect():
             host='localhost', port=6379, db=5)
     return conn
 
-
-def print_and_repeat(loop):
-    print('Hello World')
-    loop.call_later(2, print_and_repeat, loop)
-
 @asyncio.coroutine
 def main(f):
 
     import ipdb; ipdb.set_trace()
     conn = yield from connect()
-    consumer = Consumer(conn)
-    consumer.work()
+    consumer = Consumer(conn, qname='test')
+    yield from asyncio.wait(consumer.work())
     yield from asyncio.sleep(10)
     return f.done()
 

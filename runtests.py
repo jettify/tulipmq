@@ -244,7 +244,7 @@ def runtests():
 
     if args.coverage:
         cov = coverage.coverage(branch=True,
-                                source=['aiobeanstalk'],
+                                source=['tulipmq'],
                                 )
         cov.start()
 
