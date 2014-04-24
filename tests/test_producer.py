@@ -1,10 +1,8 @@
 import asyncio
 import json
-import asyncio_redis
 
 from unittest import TestCase
 from tulipmq import connect_producer
-from tulipmq.producer import Producer
 
 
 class ProducerTestCase(TestCase):

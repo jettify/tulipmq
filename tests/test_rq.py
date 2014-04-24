@@ -1,10 +1,9 @@
 import asyncio
 from unittest import TestCase
-import unittest
 import asyncio_redis
 from tulipmq.rq import RedisQueue
 
-# @unittest.skip("showing class skipping")
+
 class RedisQueueTestCase(TestCase):
 
     def setUp(self):

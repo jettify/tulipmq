@@ -2,7 +2,6 @@
 import asyncio
 import json
 import uuid
-import asyncio_redis
 from tulipmq.rq import RedisQueue
 
 
