@@ -1,6 +1,10 @@
 TulipMQ
 =======
 
+.. image:: https://travis-ci.org/jettify/tulipmq.svg   
+   :target: https://travis-ci.org/jettify/tulipmq
+
+
 **TulipMQ** is super simple message queue based on  redis_ database and
 asyncio_ (PEP-3156/tulip) framework. Created for study purposes, not
 battle tested or used in production.
