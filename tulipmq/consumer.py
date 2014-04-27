@@ -41,7 +41,7 @@ class Consumer:
         yield from self._queue.put(msg)
 
     @asyncio.coroutine
-    def cooperate(self, iter, stop_future):
+    def cooperate(self, iter):
 
         for future in iter:
             msg_raw = yield from future
@@ -60,10 +60,6 @@ class Consumer:
                 yield self.return_msg_back(msg_raw)
                 yield from asyncio.sleep(5, loop=self._loop)
 
-        # notify work method that job done here
-        stop_future.set_result(True)
-
-
     def _dispatch(self, msg_raw):
         job = Job(msg_raw)
         handle_class = MetaRegister.REGISTRY.get(job.namespace, None)
@@ -78,9 +74,8 @@ class Consumer:
     def work(self, generator=None):
         """Start listening and processing tasks"""
         job_gen = generator or self._create_generator()
-        fs = []
+        futures = []
         for i in range(self.concurrency):
-            f = asyncio.Future(loop=self._loop)
-            asyncio.async(self.cooperate(job_gen, f), loop=self._loop)
-            fs.append(f)
-        return fs
+            f = asyncio.async(self.cooperate(job_gen), loop=self._loop)
+            futures.append(f)
+        return futures
