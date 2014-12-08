@@ -14,7 +14,6 @@ class Producer:
 
     >>>namespace_producer = Producer("some_namespace")
     >>>namespace_producer.do_smth_action(a=1, b=2)
-    Deferred()
 
     following message will be constructed and inserted to redis list.
 
